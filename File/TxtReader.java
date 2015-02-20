@@ -1,4 +1,7 @@
-import java.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+import java.io.*;
 
 /**
 * Sources:
@@ -11,7 +14,7 @@ public class TxtReader extends JFrame {
 	File currentFile = null;
 
 	TxtReader() {
-		super("Txt reader pro");
+		super("Proto Txt reader");
 
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -26,7 +29,7 @@ public class TxtReader extends JFrame {
 		Container c = getContentPane();
 		JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER, 8, 5));
 
-		JButton pbn1 = new JButton("Open");
+		JButton btn1 = new JButton("Open");
 		panel.add(btn1);
 		btn1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -34,7 +37,77 @@ public class TxtReader extends JFrame {
 			}
 		});
 
+		JButton btn2 = new JButton("Save");
+		panel.add(btn2);
+		btn2.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				save();
+			}
+		});
+		c.add(panel, BorderLayout.NORTH);
+
+		jta = new JTextArea();
+		JScrollPane scroll = new JScrollPane(jta);
+		c.add(scroll, BorderLayout.CENTER);
+
+		WindowListener wl = new WindowAdapter() {
+			public void windowClosing(WindowEvent e) {
+				System.exit(0);
+			}
+		};
+		addWindowListener(wl);
+
+		setVisible(true);
 	}
 
+	public void open() {
+		JFileChooser fc = new JFileChooser();
+		ExtFileFilter ff1 = new ExtFileFilter("txt", "*.txt - text documents");
+		fc.addChoosableFileFilter(ff1);
 
+		ExtFileFilter ff2 = new ExtFileFilter("java", "*.java - java source code files");
+		fc.addChoosableFileFilter(ff2);
+
+		if(fc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+			File f = fc.getSelectedFile();
+			if(!f.isFile() || !f.canRead()) {
+				System.out.println("You choosed directory, please try again");
+				return;
+			}
+			File currentFile = f;
+			BufferedReader in = null;
+			try {
+			 	in = new BufferedReader(new FileReader(currentFile));
+			 	for(;;) {
+			 		String line = in.readLine();
+			 		if (line == null) {
+			 			break;
+			 		}
+			 		jta.append(line + "\n");
+			 	}
+
+			} catch(IOException e) {
+				e.printStackTrace();
+
+			} finally {
+
+				try {
+					if ( in != null)
+						in.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+
+			}
+
+		}
+	}
+
+	public void save() {
+
+	}
+
+	public static void main(String[] args) {
+		new TxtReader();
+	}
 }
