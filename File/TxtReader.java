@@ -46,9 +46,13 @@ public class TxtReader extends JFrame {
 		});
 		c.add(panel, BorderLayout.NORTH);
 
-		jta = new JTextArea();
+		jta = new JTextArea(20, 30);
+		jta.setFont(jta.getFont().deriveFont(14.0f));
 		JScrollPane scroll = new JScrollPane(jta);
+		// scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		// scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SROLLBAR_NEVER);
 		c.add(scroll, BorderLayout.CENTER);
+
 
 		WindowListener wl = new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
@@ -62,8 +66,10 @@ public class TxtReader extends JFrame {
 
 	public void open() {
 		JFileChooser fc = new JFileChooser();
+		fc.setAcceptAllFileFilterUsed(false);
 		ExtFileFilter ff1 = new ExtFileFilter("txt", "*.txt - text documents");
 		fc.addChoosableFileFilter(ff1);
+		// fc.setFileFileter(ff1);
 
 		ExtFileFilter ff2 = new ExtFileFilter("java", "*.java - java source code files");
 		fc.addChoosableFileFilter(ff2);
