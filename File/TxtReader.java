@@ -49,8 +49,6 @@ public class TxtReader extends JFrame {
 		jta = new JTextArea(20, 30);
 		jta.setFont(jta.getFont().deriveFont(14.0f));
 		JScrollPane scroll = new JScrollPane(jta);
-		// scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-		// scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SROLLBAR_NEVER);
 		c.add(scroll, BorderLayout.CENTER);
 
 
@@ -67,9 +65,9 @@ public class TxtReader extends JFrame {
 	public void open() {
 		JFileChooser fc = new JFileChooser();
 		fc.setAcceptAllFileFilterUsed(false);
+
 		ExtFileFilter ff1 = new ExtFileFilter("txt", "*.txt - text documents");
 		fc.addChoosableFileFilter(ff1);
-		// fc.setFileFileter(ff1);
 
 		ExtFileFilter ff2 = new ExtFileFilter("java", "*.java - java source code files");
 		fc.addChoosableFileFilter(ff2);
@@ -91,26 +89,50 @@ public class TxtReader extends JFrame {
 			 		}
 			 		jta.append(line + "\n");
 			 	}
-
 			} catch(IOException e) {
 				e.printStackTrace();
-
 			} finally {
-
 				try {
 					if ( in != null)
 						in.close();
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-
 			}
-
 		}
 	}
 
 	public void save() {
 
+		JFileChooser fc = new JFileChooser();
+		fc.setAcceptAllFileFilterUsed(false);
+
+		ExtFileFilter ff1 = new ExtFileFilter("txt", "*.txt - simple text files");
+		fc.addChoosableFileFilter(ff1);
+
+		ExtFileFilter ff2 = new ExtFileFilter("java", "*.java - programms on java");
+		fc.addChoosableFileFilter(ff2);
+
+
+		if(fc.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+			PrintWriter pw;
+			File f = fc.getSelectedFile();
+
+			try {
+				if(!f.exists())
+					f.createNewFile();
+
+				pw = new PrintWriter(f);
+				String[] lines = jta.getText().split("\\n");
+				for(int i=0; i<lines.length; i++)
+					pw.println(lines[i]);
+					pw.close();
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	public static void main(String[] args) {
