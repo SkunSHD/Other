@@ -103,7 +103,6 @@ public class TxtReader extends JFrame {
 	}
 
 	public void save() {
-
 		JFileChooser fc = new JFileChooser();
 		fc.setAcceptAllFileFilterUsed(false);
 
@@ -126,7 +125,7 @@ public class TxtReader extends JFrame {
 				String[] lines = jta.getText().split("\\n");
 				for(int i=0; i<lines.length; i++)
 					pw.println(lines[i]);
-					pw.close();
+					pw.flush();
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			} catch (IOException e) {
