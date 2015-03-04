@@ -4,32 +4,27 @@ import java.io.*;
 public class Check {
 
 	public static void main(String[] args) {
+		int time = 0;
+		String line = "";
+		
 
-		Thread watchmen = new Thread( new Runnable() {
-
-			private boolean stopRun = false;
-
-			public void stopThread() {
-				stopRun = true;
+		Scanner sc = new Scanner(System.in);
+		do {
+			System.out.println("Enter the period of time for showing time");
+			line = sc.nextLine();
+			try {
+				time = Integer.parseInt(line);
+			} catch (NumberFormatException e) {
+				System.err.println("Enter the positive number please!");
 			}
+		} while(time <= 0);
+		
 
-			public void run() {
-				while(!stopRun) {
-					System.out.println(new Date(System.currentTimeMillis()));
-					try {
-						Thread.sleep(10000);
-					} catch (InterruptedException e) {
-						System.err.print(e);
-					}
-				}
-			}
-		});
+		CheckThread.MyThread watchmen = new CheckThread.MyThread(time);
 
 		watchmen.start();
 
 		System.out.println("Type \"kill\" to kill the process");
-		Scanner sc = new Scanner(System.in);
-
 		String sent = "";
 		while(sc.hasNext()) {
 			if((sent = sc.nextLine()).equals("kill")) {
