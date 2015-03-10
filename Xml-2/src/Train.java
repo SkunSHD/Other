@@ -4,7 +4,9 @@ import java.time.LocalDateTime;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
+@XmlType(propOrder={"from", "to", "date", "time"})
 @XmlRootElement(name="train")
 public class Train implements Serializable {
 	
@@ -26,13 +28,18 @@ public class Train implements Serializable {
 		this.from = from;
 		this.to = to;
 		this.date = date.toLocalDate().toString();
-		this.time = date.toLocalDate().toString();
+		this.time = date.toLocalTime().toString();
 		
 	}
 	
 	@XmlAttribute
 	public void setId(int id) {
 		this.id = id;
+	}
+	
+	@XmlElement(name="date")
+	public void setDate(String date) {
+		this.date = date;
 	}
 	
 	@XmlElement(name="from")
@@ -45,10 +52,7 @@ public class Train implements Serializable {
 		this.to = to;
 	}
 
-	@XmlElement(name="date")
-	public void setDate(String date) {
-		this.date = date;
-	}
+
 	
 	public int getId() {
 		return id;
@@ -78,6 +82,6 @@ public class Train implements Serializable {
 	
 	@Override
 	public String toString() {
-		return "[Train №" + id + ")" + from + "-" + to + "  " + date + " " + time + "]";
+		return "[Train # " + id + " " + from + "-" + to + "  " + date + " " + time + "]/n";
 	}
 }

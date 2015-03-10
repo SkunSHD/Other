@@ -12,6 +12,7 @@ public class Trains implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
+	@XmlElement(name="trains")
 	private List<Train> trainsList = new ArrayList<>();
 	
 	
@@ -23,7 +24,7 @@ public class Trains implements Serializable {
 		List<String> result = new ArrayList<>();
 		LocalTime trainLocalTime = null;
 		
-		if(from.isBefore(to)) {
+		if(!from.isBefore(to)) {
 			System.out.println("Error! Enter correct period of time. Current format *from* - *to*");
 		} else {
 			for(Train train : trainsList) {
@@ -37,6 +38,7 @@ public class Trains implements Serializable {
 				
 				if(trainLocalTime.isAfter(from) && trainLocalTime.isBefore(to)) {
 					result.add(trainLocalTime.toString());
+					System.out.println(trainLocalTime.toString());
 				}
 			}
 		}

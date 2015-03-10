@@ -42,7 +42,7 @@ public class XmlUtil {
 		}
 		
 		try {
-			JAXBContext jaxbContext = JAXBContext.newInstance();
+			JAXBContext jaxbContext = JAXBContext.newInstance(Trains.class);
 			Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
 			
 			trains = (Trains) unmarshaller.unmarshal(file);
@@ -57,12 +57,10 @@ public class XmlUtil {
 	
 	public boolean addTrain(File file, Train train) {
 		boolean flag = false;
-//		int idAddingTrain = train.getId();
 		
 		Trains trains = readXml(file);
 		trains.addTrain(train);
 		writeXml(file, trains);
-		
 		
 		return flag;
 	}

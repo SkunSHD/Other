@@ -1,27 +1,66 @@
-import java.io.RandomAccessFile;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 
-/**
- * So.. what need to do:
- * 1-Figured out how work RAF
- * 2 - create his object
- * 3 - catch info from object
- * http://www.quizful.net/post/java-reflection-api
- * http://devcolibri.com/2989
- * https://dl.dropboxusercontent.com/u/28311951/Java/pdf/java-m3.pdf
- */
+@SaveToFile(path = "D:\\1.txt")
+public class TextContainer {
+	String text;
 
-public class Reflection1 {
+	public TextContainer(String text) {
+		this.text = text;
+	}
 
-	public static void main(String[] args) {
-		final int i = 777;
+	@SaveMethod
+	public void save(String path) {
 
-		Class cls1 = RandomAccessFile.class;
+		try (FileOutputStream fos = new FileOutputStream(path);
+				ObjectOutputStream oos = new ObjectOutputStream(fos)) {
+			oos.writeUTF(text);
+			oos.flush();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 
-		int mods = cls1.getModifiers();
-		if(Modifier.isPublic(mods)) {
-			System.out.println("public");
+	public static void main(String[] args) throws Exception {
+		String pathToSave = null;
+
+		// �������� � ��������� ���������� pathToSave ���� ��� ���������� �����
+		// �� ����� ��������� SaveToFile
+		Class<?> cl = TextContainer.class;
+		if (cl.isAnnotationPresent(SaveToFile.class)) {
+			SaveToFile s = cl.getAnnotation(SaveToFile.class);
+			pathToSave = s.path();
 		}
 
-		System.out.println(cls1);
+		// ������� ������ ������ TextContainer � �������� � ���������� ����
+		// ����, ������� �� ����� ����� ���������������
+		Class[] paramTypes = new Class[] { String.class };
+		Constructor constr = cl.getDeclaredConstructor(paramTypes);
+		TextContainer tc = (TextContainer) constr.newInstance(String
+				.valueOf("Hello!"));
+
+		// ���� �����, ������� �������� ��������� SaveMethod � �������� ��� ���
+		// ������� tc
+		Method[] methods = cl.getMethods();
+
+		for (Method m : methods) {
+			if (m.isAnnotationPresent(SaveMethod.class)) {
+				System.out.println("Ok");
+				m.invoke(tc, pathToSave);
+
+			}
+		}
+
+		//��������
+		try (FileInputStream fis = new FileInputStream(pathToSave);
+				ObjectInputStream ois = new ObjectInputStream(fis)) {
+			tc.text = ois.readUTF();
+			System.out.println(tc.text);
+		}
 	}
 }

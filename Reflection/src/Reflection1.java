@@ -1,20 +1,28 @@
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
 public class Reflection1 {
 	
 	public int a = 1;
 	private boolean flag = true;
-	
+
 	
 	public static void main(String[] args) {
-		 
+		
+
 		try {
-			RandomAccessFile raf = new RandomAccessFile("file.txt", "rw");
+			File file = new File("file.txt");
+			if (!file.exists()) {
+				return;
+			}
 			
+			RandomAccessFile raf = new RandomAccessFile(file, "rw");
 			Class<?> i = raf.getClass();
 			System.out.println(i.getName());
 
@@ -67,6 +75,11 @@ public class Reflection1 {
 				Class<?> fieldType = f.getType();
 				System.out.println("Имя " + f.getName());
 				System.out.println("Тип " + fieldType.getName());
+				int mod = f.getModifiers();
+				if(Modifier.isFinal(mod)) {
+					System.out.println("Модификатор final");
+				}
+				
 				try {
 					f.setAccessible(true);
 					System.out.println("Значение " + f.get(raf) + "\n");
@@ -78,26 +91,48 @@ public class Reflection1 {
 			
 			//			change private parametrs
 			try {
-				RandomAccessFile raf2 = new RandomAccessFile("file.txt", "rw");
-				Field fieldC = raf2.getClass().getDeclaredField("O_DSYNC");
-				fieldC.setAccessible(true);
-				System.out.println("before changing "+fieldC.getInt(raf2));
-				fieldC.setInt(raf2, 3);
-				System.out.println("after changing "+fieldC.getInt(raf2));
 				
-//				Field current = cl.getDeclaredField("flag");
-//				cl.setAccessible(true);
-////				
-//				System.out.println("before changing "+current.getInt(myObj));
-//				current.setBoolean(raf, false);
-//				System.out.println("after changing "+current.getInt(myObj));
+				Field fieldC = raf.getClass().getDeclaredField("rw");
+				fieldC.setAccessible(true);
+				System.out.println("before changing "+fieldC.getBoolean(raf));
+				fieldC.setBoolean(raf, false);
+				System.out.println("after changing "+fieldC.getBoolean(raf));
+				
+
+				//				Constructor researching
+				Class c = raf.getClass();
+				Constructor[] constructors = c.getConstructors();
+				for(Constructor curConstr : constructors) {
+					Class[] paramTypes = curConstr.getParameterTypes();
+					System.out.println("Constructor name: "+curConstr.getName());
+					System.out.println("Parametrs: ");
+					for (Class paramType: paramTypes) {
+						System.out.print(paramType.getName() + " ");
+					}
+					System.out.println("\n");
+				}
+				
+
+				//				Show private konstructors and their metods, parametrs
+				Method[] methods = c.getDeclaredMethods();
+				for(Method method: methods) {
+					System.out.println("Method name: " + method.getName());
+					System.out.println("Return type: " + method.getReturnType().getName());
+					
+					Class[] paramTypes = method.getParameterTypes();
+					if(paramTypes.length>0) {
+						System.out.print("Params list:");
+						for(Class paramType: paramTypes) {
+							System.out.print(" " + paramType.getName());
+						}
+					}
+					System.out.println("");
+				}
 				
 			}catch (Exception e) {
 				e.printStackTrace();
 			}
-			
-			
-			
+
 			raf.close();
 			
 		} catch(FileNotFoundException e) {
