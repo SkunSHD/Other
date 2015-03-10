@@ -14,7 +14,7 @@ public class Trains implements Serializable {
 	
 	private List<Train> trainsList = new ArrayList<>();
 	
-	@XmlElement(name="train")
+	
 	public void addTrain(Train train) {
 		trainsList.add(train);
 	}

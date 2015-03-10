@@ -78,6 +78,6 @@ public class Train implements Serializable {
 	
 	@Override
 	public String toString() {
-		return "[" + id + ")" + from + "  " + to + "  " + date + " " + time + "]";
+		return "[Train №" + id + ")" + from + "-" + to + "  " + date + " " + time + "]";
 	}
 }
